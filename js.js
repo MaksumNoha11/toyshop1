@@ -19,7 +19,7 @@ function startMoving() {
 }
 
 function stopMoving() {
-    clearInterval(animation);
+    StartMoving = 0;
 }
 
 startBtn.addEventListener('click', startMoving);
