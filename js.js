@@ -5,6 +5,7 @@ var stopBtn = document.getElementById('stopBtn');
 var animation;
 var position = 0;
 var speed = 5;
+var isMoving = false;
 
 function moveCar() {
     position += speed;
@@ -14,12 +15,17 @@ function moveCar() {
     car.style.left = position + 'px';
 }
 
-function startMoving() {
-    animation = setInterval(moveCar, 50);
+function stopMoving() {
+    clearInterval(animation); 
+    isMoving = false; 
 }
 
-function stopMoving() {
-    StartMoving = 0;
+function startMoving() {
+    speed += 2;
+    if (!isMoving) { 
+        animation = setInterval(moveCar, 50);
+        isMoving = true;
+    }
 }
 
 startBtn.addEventListener('click', startMoving);
@@ -36,11 +42,11 @@ function moveClouds() {
 
         cloud.style.left = cloudPos + 'px';
 
-        // Встановлення нижчого рівня для хмар
         if (!cloud.style.top || parseInt(cloud.style.top) < 300) {
-            cloud.style.top = `${300 + index * 50}px`; // Розподіляємо хмари по висоті
+            cloud.style.top = `${300 + index * 50}px`;
         }
     });
 }
 
 setInterval(moveClouds, 50);
+
