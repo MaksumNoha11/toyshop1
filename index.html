@@ -3,11 +3,116 @@
 <head>
     <title>Анімована машина</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="lesson27.css">
 </head>
-<body>
-<h1>світ, де оживають мрії! 🌟</br><a href="https://www.instagram.com/baby.universe_ua/">Іграшковий Всесвіт!<br></a> </h1>
+<style>
+    body {
+        margin: 0;
+        background: #3ea1cb;
+        overflow: hidden;
+        transition: background 1s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+    }
 
+    .road {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 100px;
+        background: #555;
+    }
+
+    .car {
+        position: absolute;
+        left: 0;
+        bottom: 110px;
+        width: 365px;
+        height: 185px;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .controls {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+
+    .controls button {
+        padding: 15px 30px;
+        margin-right: 15px;
+        font-size: 18px;
+        cursor: pointer;
+        border-radius: 25px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #4CAF50; /* Повернули колір кнопок на зелений */
+        color: white;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 128, 0, 0.5); /* Зеленувата тінь */
+        transition: all 0.3s ease-in-out, filter 0.3s ease;
+    }
+
+    .controls button:hover {
+        transform: scale(1.1); /* Збільшення кнопки при наведенні */
+        box-shadow: 0 0 15px 10px rgba(0, 128, 0, 1); /* Яскравіша тінь при наведенні */
+
+    }
+
+    .controls button:focus {
+        outline: none;
+    }
+
+    .cloud {
+        position: absolute;
+        top: 300px;
+        width: 120px;
+        height: 60px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 20px 10px 0 white, 40px -10px 0 white, 60px 10px 0 white;
+        opacity: 0.8;
+    }
+
+    .sun {
+        position: absolute;
+        top: 50px;
+        right: 100px;
+        width: 80px;
+        height: 80px;
+        background: yellow;
+        border-radius: 50%;
+        transition: top 2s ease-in-out;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    #headlight {
+        transition: filter 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+    }
+
+    /* Для нічного режиму: зробимо фари яскравішими і з більшим світлом */
+    .night-mode #headlight {
+        filter: blur(12px) brightness(2); /* Сильний блюр та більша яскравість */
+        box-shadow: 0 0 20px 10px rgba(255, 235, 59, 1); /* Яскраве світло навколо */
+    }
+
+    /* У денному режимі фари не світяться, немає ефектів світла і блюру */
+    .day-mode #headlight {
+        filter: none;
+        box-shadow: none;
+    }
+
+</style>
+
+</style>
+<h1><a href="https://www.instagram.com/svitigrashkovii/" target="_blank">Світ, де оживають мрії! 🌟</a></h1>
+
+<div class="sun" id="sun"></div>
 <div class="road"></div>
 <div class="car" id="car">
     <svg viewBox="0 0 365 185">
@@ -19,21 +124,81 @@
         <circle r="15" fill="#555" cx="90" cy="140" />
         <circle r="40" fill="#222" stroke="white" stroke-width="7" cx="270" cy="140" />
         <circle r="15" fill="#555" cx="270" cy="140" />
-        <circle r="15" fill="gold" cx="340" cy="90" />
-        <circle r="10" fill="orange" cx="15" cy="90" />
+        <circle id="headlight" r="15" fill="gold" cx="340" cy="90" />
     </svg>
 </div>
 
 <div class="controls">
     <button id="startBtn">Старт</button>
     <button id="stopBtn">Стоп</button>
+    <button id="nightModeBtn">Нічний режим</button>
 </div>
 
 <div class="cloud" id="cloud1" style="left: 100px;"></div>
 <div class="cloud" id="cloud2" style="left: 400px; top: 80px;"></div>
 <div class="cloud" id="cloud3" style="left: 700px; top: 40px;"></div>
 
+<script>
+    var car = document.getElementById('car');
+    var startBtn = document.getElementById('startBtn');
+    var stopBtn = document.getElementById('stopBtn');
+    var nightModeBtn = document.getElementById('nightModeBtn');
+    var headlight = document.getElementById('headlight');
+    var sun = document.getElementById('sun');
+    var animation;
+    var position = 0;
+    var speed = 30;
+    var isMoving = false;
+    var nightMode = false;
 
-<script src="js.js"></script>
+    function moveCar() {
+        position += speed;
+        if (position > window.innerWidth) {
+            position = -365;
+        }
+        car.style.left = position + 'px';
+        car.style.transform = `translateY(${Math.sin(position / 50) * 5}px)`;
+    }
+
+    function stopMoving() {
+        clearInterval(animation);
+        isMoving = false;
+    }
+
+    function startMoving() {
+        speed += 2;
+        if (!isMoving) {
+            animation = setInterval(moveCar, 50);
+            isMoving = true;
+        }
+    }
+
+    startBtn.addEventListener('click', () => {
+        startMoving();
+    });
+
+    stopBtn.addEventListener('click', () => {
+        stopMoving();
+    });
+
+    nightModeBtn.addEventListener('click', () => {
+        nightMode = !nightMode;
+        document.body.style.background = nightMode ? '#1a1a2e' : '#3ea1cb';
+        sun.style.top = nightMode ? '500px' : '50px';
+
+        if (nightMode) {
+            headlight.setAttribute('fill', 'yellow'); // Включаємо фари в нічному режимі
+            document.body.classList.add('night-mode');
+            document.body.classList.remove('day-mode');
+        } else {
+            headlight.setAttribute('fill', 'gold'); // Вимикаємо фари при денному режимі
+            document.body.classList.remove('night-mode');
+            document.body.classList.add('day-mode');
+        }
+    });
+</script>
+
+
+
 </body>
 </html>
